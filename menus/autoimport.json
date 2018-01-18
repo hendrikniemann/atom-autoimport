@@ -1,0 +1,26 @@
+{
+  "context-menu": {
+    "atom-text-editor": [
+      {
+        "label": "Auto import",
+        "command": "autoimport:import"
+      }
+    ]
+  },
+  "menu": [
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "autoimport",
+          "submenu": [
+            {
+              "label": "Auto import",
+              "command": "autoimport:import"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
