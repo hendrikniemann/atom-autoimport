@@ -1,7 +1,7 @@
 {
   "name": "autoimport",
   "main": "./lib/autoimport",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Import unresolved identifiers using flow",
   "keywords": ["flow"],
   "activationCommands": {
