@@ -1,13 +1,13 @@
 {
   "name": "autoimport",
   "main": "./lib/autoimport",
-  "version": "0.0.0",
-  "description": "A short description of your package",
-  "keywords": [],
+  "version": "0.1.0",
+  "description": "Import unresolved identifiers using flow",
+  "keywords": ["flow"],
   "activationCommands": {
     "atom-workspace": "autoimport:import"
   },
-  "repository": "https://github.com/atom/autoimport",
+  "repository": "https://github.com/hendrikniemann/atom-autoimport",
   "license": "MIT",
   "scripts": {
     "prepublish": "npm run build",
@@ -38,9 +38,7 @@
     "rimraf": "^2.6.2"
   },
   "babel": {
-    "plugins": [
-      "./dev/use-babel-plugin"
-    ],
+    "plugins": ["./dev/use-babel-plugin"],
     "presets": [
       [
         "@babel/preset-env",
