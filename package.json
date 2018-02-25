@@ -1,9 +1,11 @@
 {
   "name": "autoimport",
   "main": "./lib/autoimport",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Import unresolved identifiers using flow",
-  "keywords": ["flow"],
+  "keywords": [
+    "flow"
+  ],
   "activationCommands": {
     "atom-workspace": "autoimport:import"
   },
@@ -38,7 +40,9 @@
     "rimraf": "^2.6.2"
   },
   "babel": {
-    "plugins": ["./dev/use-babel-plugin"],
+    "plugins": [
+      "./dev/use-babel-plugin"
+    ],
     "presets": [
       [
         "@babel/preset-env",
