@@ -1,6 +1,7 @@
 /* @flow */
 import * as fs from 'fs';
 import * as path from 'path';
+import glob from 'glob';
 
 export opaque type RootDir: string = string;
 
@@ -54,4 +55,18 @@ export function findRootDir(file: string): RootDir {
     throw new Error('Could not find parent directory of file with package.json');
   }
   return findRootDir(base);
+}
+
+/**
+ * Finds files with the pattern provided
+ */
+export function findFiles(rootDir: RootDir, pattern: string): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    glob(pattern, { cwd: rootDir }, (error, matches) => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(matches);
+    });
+  });
 }

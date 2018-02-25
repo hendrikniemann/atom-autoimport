@@ -1,5 +1,5 @@
 {
   "atom-workspace": {
-    "ctrl-alt-o": "autoimport:import"
+    "ctrl-cmd-o": "autoimport:import"
   }
 }

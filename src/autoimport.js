@@ -7,7 +7,7 @@ import { CompositeDisposable } from 'atom';
 import * as fs from 'fs';
 import * as path from 'path';
 import findpackage from 'find-package';
-import { type PackageJson, findRootDir } from './dir';
+import { type PackageJson, findRootDir, findFiles } from './dir';
 import { type ImportType, addImports } from './import';
 import { flowCheckContents, findUnresolvedIdentifiers } from './flow';
 import {
@@ -15,6 +15,7 @@ import {
   nodeNativeModulePlugin,
   installedDependencyDefaultImportPlugin,
   flowNamedImportPlugin,
+  projectFileDefaultImportPlugin,
 } from './plugins';
 import { type FlowReport } from 'flow-bin';
 import * as glob from 'glob';
@@ -47,10 +48,11 @@ export default {
 
     const pane = atom.workspace.getActivePaneItem();
     if (editor && pane) {
-      const file = pane.buffer.file.path;
       const range = editor.getBuffer().getRange();
       const text = editor.getTextInBufferRange(range);
-      const rootDir = findRootDir(file);
+      const rootDir = findRootDir(pane.buffer.file.path);
+      const file = path.relative(rootDir, pane.buffer.file.path);
+      const projectFiles = await findFiles(rootDir, 'src/**/*.js');
       const report = await flowCheckContents(rootDir, file, text);
       const identifiers = findUnresolvedIdentifiers(report);
       // $FlowFixMe
@@ -68,13 +70,14 @@ export default {
         const imp: ?ImportType = await [
           nodeNativeModulePlugin,
           installedDependencyDefaultImportPlugin,
+          projectFileDefaultImportPlugin,
           flowNamedImportPlugin,
         ].reduce((previous, next: ImportPlugin) => {
           return previous.then((value: ?ImportType) => {
             if (value) {
               return value;
             }
-            return next(rootDir, file, identifier, [], installedPackages);
+            return next(rootDir, file, identifier, projectFiles, installedPackages);
           });
         }, Promise.resolve(null));
 
