@@ -76,6 +76,16 @@ export const flowNamedImportPlugin: ImportPlugin = (
   );
   return flowCheckContents(rootDir, file, importLines.join('\n')).then(({ errors }) => {
     const toLine = error => error.message[0].line;
+    const importTypeError = errors.find(
+      error =>
+        error.message[0].descr ===
+        `Cannot import the type \`${identifier}\` as a value. Use \`import type\` instead.`,
+    );
+    if (importTypeError) {
+      const typeImport = imports[toLine(importTypeError) - 1];
+      typeImport.type = 'type';
+      return typeImport;
+    }
     const provokedErrors = errors
       .filter(error =>
         error.message[0].descr.startsWith(

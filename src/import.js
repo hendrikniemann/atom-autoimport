@@ -6,7 +6,7 @@ import generate from '@babel/generator';
 type BabelAST = Object;
 
 export type ImportType = {
-  type: 'default' | 'named' | 'wildcard',
+  type: 'default' | 'named' | 'wildcard' | 'type',
   identifier: string,
   source: string,
 };
@@ -23,6 +23,10 @@ export function createImport({ type, identifier, source }: ImportType): BabelAST
       return types.importSpecifier(id, id);
     case 'wildcard':
       return types.importNamespaceSpecifier(id);
+    case 'type':
+      const i = types.importSpecifier(id, id);
+      i.importKind = 'type';
+      return i;
     default:
       throw new TypeError(`Unknown import type ${type}`);
   }
