@@ -13,7 +13,7 @@ export type ImportPlugin = (
   installedPackages: string[],
 ) => Promise<?ImportType>;
 
-const matchName = (id, pckg) => id === camelcase(pckg);
+const matchName = (id, pckg) => id.toLowerCase() === camelcase(pckg).toLowerCase();
 
 /**
  * Creates a relative import string given a base file and a file to import
