@@ -58,7 +58,10 @@ export function findRootDir(file: string): RootDir {
 }
 
 /**
- * Finds files with the pattern provided
+ * Finds files with the pattern provided. It uses the glob library under the hood to search for the
+ * files in the root directory
+ * @arg rootDir the project root directory to search in
+ * @arg pattern the pattern that will be passed into the glob library
  */
 export function findFiles(rootDir: RootDir, pattern: string): Promise<string[]> {
   return new Promise((resolve, reject) => {

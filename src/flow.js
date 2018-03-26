@@ -8,6 +8,7 @@ export opaque type FlowBin: string = string;
 
 /**
  * Returns the path of the flow executable that is used in the project located at the provided dir.
+ * @arg rootDir the project's root dir that contains the flow binary in the node_modules folder
  */
 export function getFlowExecutable(rootDir: RootDir): Promise<FlowBin> {
   return findCachedAsync(rootDir, 'node_modules/.bin/flow');
@@ -17,6 +18,9 @@ export function getFlowExecutable(rootDir: RootDir): Promise<FlowBin> {
  * Provided a file uses the flow binary from the project of the file and checks the content using
  * flow's check-contents command. The command will take the content and pretent that the content
  * is inside of the provided filename.
+ * @arg rootDir the projects root directory
+ * @arg file the file path that will be used by flow to pretend the content is inside of it
+ * @arg content the content that should be flow checked
  */
 export function flowCheckContents(
   rootDir: RootDir,
@@ -39,6 +43,9 @@ export const UNRESOLVED_REGEX = /^Cannot resolve name `([^`]+)`\.$/;
 /**
  * Checks if the provided error was cause by an unresolved identifier.
  * If so the identifier is returned.
+ * @arg error the flow error from a flow report that should be checked for being an "unresolved
+ *   identifier" error
+ * @returns the identifier's name or null if the error is not from an undefined identifier
  */
 export function isUnresolvedError(error: ErrorReport): ?string {
   if (error.kind === 'infer' || error.level === 'error') {
@@ -65,6 +72,7 @@ function collect<S, T>(mapFn: S => ?T, arr: $ReadOnlyArray<S>): T[] {
 
 /**
  * Picks the names of all unresolved identifiers from the flow report.
+ * @arg report a flow report generated from a flow check json output
  */
 export function findUnresolvedIdentifiers(report: FlowReport): string[] {
   return collect(isUnresolvedError, report.errors);
