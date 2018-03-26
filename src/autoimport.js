@@ -7,7 +7,7 @@ import { CompositeDisposable } from 'atom';
 import * as fs from 'fs';
 import * as path from 'path';
 import findpackage from 'find-package';
-import { type PackageJson, findRootDir, findFiles } from './dir';
+import { type PackageJson, findRootDir, findFiles, importNameFromFileName } from './dir';
 import { type ImportType, addImports } from './import';
 import { flowCheckContents, findUnresolvedIdentifiers } from './flow';
 import {
@@ -52,7 +52,7 @@ export default {
       const text = editor.getTextInBufferRange(range);
       const rootDir = findRootDir(pane.buffer.file.path);
       const file = path.relative(rootDir, pane.buffer.file.path);
-      const projectFiles = await findFiles(rootDir, 'src/**/*.js');
+      const projectFiles = (await findFiles(rootDir, 'src/**/*.js')).map(importNameFromFileName);
       const report = await flowCheckContents(rootDir, file, text);
       const identifiers = findUnresolvedIdentifiers(report);
       // $FlowFixMe

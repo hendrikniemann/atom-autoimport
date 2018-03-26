@@ -137,10 +137,7 @@ export const projectFileDefaultImportPlugin: ImportPlugin = (
   localFiles: string[],
   installedPackages: string[],
 ): Promise<?ImportType> => {
-  const match = localFiles.filter(f => f.endsWith('.js')).find(f => {
-    const basename = path.basename(f, '.js');
-    return matchName(identifier, basename);
-  });
+  const match = localFiles.filter(f => f.endsWith('.js')).find(f => matchName(identifier, f));
 
   if (match) {
     const source = toImportString(file, match);

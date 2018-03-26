@@ -60,7 +60,7 @@ export function mergeImports(imp: ImportType, ast: BabelAST) {
  */
 export function addImport(fileContent: string, imp: ImportType): string {
   let lines = fileContent.split('\n');
-  const regex = new RegExp(`^import .* from '${imp.source}';$`);
+  const regex = new RegExp(`^import\s.*\sfrom\s+'${imp.source}';$`);
   const existingImport = lines.findIndex(line => regex.test(line));
   if (existingImport >= 0) {
     const ast = babylon.parse(lines[existingImport], { sourceType: 'module' });
@@ -82,3 +82,61 @@ export function addImport(fileContent: string, imp: ImportType): string {
 export function addImports(fileContent: string, imps: $ReadOnlyArray<ImportType>): string {
   return imps.reduce((content, imp) => addImport(content, imp), fileContent);
 }
+
+/**
+ * Parse a single import statement code snippet into a babel ast using babylon
+ * @arg code a string containing a single import statement
+ */
+export function parseImport(code: string) {
+  const ast = babylon.parse(code, { sourceType: 'module' });
+  return ast.program.body[0];
+}
+
+type ReadImportsType = {
+  imports: string[],
+  before: string, // The file content before the first import statement
+  after: string, // The file content after the last import statement
+};
+
+/**
+ * Consumes all import statements of a file and splits it into code before the statements, code
+ * after the statements and lines that are in between these imports.
+ * Warning: CURRENTLY DOES NOT SUPPORT CODE OR COMMENTS IN BETWEEN IMPORTS
+ */
+export function readImports(fileContent: string): ReadImportsType {
+  const lines = fileContent.split('\n');
+  const before = [];
+  const imports = [];
+  const after = [];
+  const lastIndex = 0;
+
+  // Push line either into before or after depending on if there are imports already
+  const addOtherLine = line => (imports.length === 0 ? before.push(line) : after.push(line));
+  const isImportStart = line => line.match(/^\s*import/);
+  const isImportEnd = line => line.match(/from\s+["'].+["']\s*;?\s*$/);
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    if (isImportStart(line)) {
+      let statement = line;
+      while (!isImportEnd(line)) {
+        line = lines[++i];
+      }
+      imports.push(statement);
+    } else {
+      addOtherLine(line);
+    }
+  }
+
+  return {
+    before: before.join('\n'),
+    after: after.join('\n'),
+    imports,
+  };
+}
+
+type WriteImportsType = {
+
+}
+
+export function writeImports()

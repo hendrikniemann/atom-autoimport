@@ -73,3 +73,20 @@ export function findFiles(rootDir: RootDir, pattern: string): Promise<string[]> 
     });
   });
 }
+
+/**
+ * Turns a file name into a string that would usually be used in an import statement.
+ * This removes `.js` file endings and completely omits the file name if it is `index.js`.
+ * @arg fileName the file name that should be transformed for an import statement
+ */
+export function importNameFromFileName(fileName: string) {
+  if (fileName.endsWith('/index.js')) {
+    return fileName.substr(0, fileName.length - 9);
+  }
+
+  if (fileName.endsWith('.js')) {
+    return fileName.substr(0, fileName.length - 3);
+  }
+
+  return fileName;
+}
